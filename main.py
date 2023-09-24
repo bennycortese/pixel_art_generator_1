@@ -5,6 +5,7 @@ from PIL import Image
 import numpy as np
 import cv2
 from io import BytesIO
+import requests
 
 
 def pixelate(input_file_path, output_file_path, pixel_size):
@@ -47,25 +48,19 @@ def unsharp_mask(image_name, kernel_size=(5, 5), sigma=1.0, amount=1.0, threshol
 #    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 #    im = cv.filter2D(im, -1, kernel)
 
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
+def generate_base_images(image_prompt, number_of_images):
     load_dotenv()
     openai.api_key = os.getenv("OPENAI_API_KEY")
-    prompt_messages = []
-    prompt_messages.append({"role": "user", "content": "Say Hello and describe rome"})
 
     response = openai.Image.create(
         prompt="I want a pixel art image where for every pixel you render, you take up 16 pixels with the same color "
-               "right next to each other starting from the top left pixel. Make a ROTMG style paladin",
-        n=5,
+               "right next to each other starting from the top left pixel. Draw me a " + image_prompt,
+        n=number_of_images,
         size="256x256"
     )
-    # Use a breakpoint in the code line below to debug your script.
+
     return response
+
 
 def variation(image_name):
     load_dotenv()
@@ -88,12 +83,28 @@ def variation(image_name):
     image_url = response['data'][0]['url']
     return image_url
 
+
+def generate_image_batch(image_prompt, number_of_images):
+    url_data = generate_base_images(image_prompt, number_of_images)["data"]
+    image_urls = []
+    for dataPoint in url_data:
+        image_urls.append(dataPoint["url"])
+    cur_index = 1
+    for image_url in image_urls:
+        r = requests.get(image_url, allow_redirects=True)
+        base_image_name = "./cur_batch/curImageBase" + str(cur_index) + ".png"
+        open(base_image_name, 'wb').write(r.content)
+        cur_index += 1
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    #print(print_hi('PyCharm'))
-    #pixelate("paly2.png", "paly2pix.png", 16)
-    #resize_to_x_bit("paly2pix.png", 16)
-    #unsharp_mask("16bit_paly2pix.png")
-    print(variation("paly2.png"))
+    image_prompt = "paladin"
+    generate_image_batch(image_prompt, 10)
+
+    # pixelate(base_image_name, "pix" + base_image_name, 16)
+    # resize_to_x_bit("pix" + base_image_name, 16)
+    # unsharp_mask("16bit_pix" + base_image_name)
+    # print(variation("paly2.png"))
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
