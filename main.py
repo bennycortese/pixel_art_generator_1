@@ -54,7 +54,7 @@ def generate_base_images(image_prompt, number_of_images):
 
     response = openai.Image.create(
         prompt="I want a pixel art image where for every pixel you render, you take up 16 pixels with the same color "
-               "right next to each other starting from the top left pixel. Draw me a " + image_prompt,
+               "right next to each other starting from the top left pixel. Draw me a 16 bit RBY pokemon style " + image_prompt + " where you use no more than 256 total pixels",
         n=number_of_images,
         size="256x256"
     )
@@ -69,7 +69,7 @@ def variation(image_name):
     image = Image.open(image_name)
     width, height = 64, 64
     image = image.resize((width, height))
-
+    
     # Convert the image to a BytesIO object
     byte_stream = BytesIO()
     image.save(byte_stream, format='PNG')
