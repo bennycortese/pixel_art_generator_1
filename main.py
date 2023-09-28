@@ -69,7 +69,7 @@ def variation(image_name):
     image = Image.open(image_name)
     width, height = 64, 64
     image = image.resize((width, height))
-    
+
     # Convert the image to a BytesIO object
     byte_stream = BytesIO()
     image.save(byte_stream, format='PNG')
@@ -95,6 +95,15 @@ def generate_image_batch(image_prompt, number_of_images):
         base_image_name = "./cur_batch/curImageBase" + str(cur_index) + ".png"
         open(base_image_name, 'wb').write(r.content)
         cur_index += 1
+
+
+ # https://pyimagesearch.com/2014/09/15/python-compare-two-images/ --- article to read for fully implementing this
+ # later, brain tired rn/need to self host the stable diffusion
+def mean_squared_error_image_diff(imageA, imageB):
+    err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
+    err /= float(imageA.shape[0] * imageA.shape[1])
+
+    return err
 
 
 # Press the green button in the gutter to run the script.
