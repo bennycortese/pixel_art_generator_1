@@ -54,7 +54,8 @@ def generate_base_images(image_prompt, number_of_images):
 
     response = openai.Image.create(
         prompt="I want a pixel art image where for every pixel you render, you take up 16 pixels with the same color "
-               "right next to each other starting from the top left pixel. Draw me a 16 bit RBY pokemon style " + image_prompt + " where you use no more than 256 total pixels",
+               "right next to each other starting from the top left pixel. Draw me a 16 bit RBY pokemon style " +
+        image_prompt + " where you use no more than 256 total pixels",
         n=number_of_images,
         size="256x256"
     )
@@ -96,14 +97,21 @@ def generate_image_batch(image_prompt, number_of_images):
         open(base_image_name, 'wb').write(r.content)
         cur_index += 1
 
-
  # https://pyimagesearch.com/2014/09/15/python-compare-two-images/ --- article to read for fully implementing this
  # later, brain tired rn/need to self host the stable diffusion
+
+
 def mean_squared_error_image_diff(imageA, imageB):
     err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
     err /= float(imageA.shape[0] * imageA.shape[1])
 
     return err
+
+
+def calulate_all(image_set):
+    for image1, image2 in image_set:
+        if (image1 != image2):
+            mean_squared_error_image_diff(image1, image2)
 
 
 # Press the green button in the gutter to run the script.
