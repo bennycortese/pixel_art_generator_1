@@ -7,7 +7,7 @@ import cv2
 from io import BytesIO
 import requests
 
-
+# note to self, see if I can reproduce stable diffusion with a specific canvas size 
 def pixelate(input_file_path, output_file_path, pixel_size):
     image = Image.open(input_file_path)
     image = image.resize(
