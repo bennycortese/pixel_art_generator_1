@@ -117,7 +117,11 @@ def calulate_all(image_set):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     image_prompt = "paladin"
+    image_prompt2 = "paladin_pokemon"
     generate_image_batch(image_prompt, 10)
+    generate_image_batch(image_prompt2, 10)
+    #compare value of these batches, see if permutations are better
+
 
     # pixelate(base_image_name, "pix" + base_image_name, 16)
     # resize_to_x_bit("pix" + base_image_name, 16)
